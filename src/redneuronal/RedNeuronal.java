@@ -38,9 +38,9 @@ public class RedNeuronal {
         String archivoEntrada=args[0];
         String archivoSalida=args[1];
         
-        int lonEntrada=2;
-        int lonCapaOculta=3;  //8 7 4
-        int lonSalida=2;
+        int lonEntrada=8;
+        int lonCapaOculta=7;  //8 7 4
+        int lonSalida=4;
         double ratioAprendizaje=1;
         int ciclosAEntrenar=2;
         

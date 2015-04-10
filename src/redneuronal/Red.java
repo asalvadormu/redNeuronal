@@ -29,7 +29,121 @@ public class Red {
     private int numCapaSalida;
     private int ciclos;
     
+
     /**
+     * Inicia los pesos con valores en el intervalo (-0.5,0.5)
+     * 
+     * Cada sinapsis independiente porque cada capa tiene 
+     * distintas neuronas.
+     *
+     */
+    public void iniciarSinapsis(){   
+        System.out.println("sinapsis A");
+        for(int i=0;i<sinapsisA.length;i++){
+            for(int j=0;j<sinapsisA[0].length;j++){        
+               sinapsisA[i][j]=Math.random()-0.5;
+               System.out.print( sinapsisA[i][j]+" ");               
+            }
+            System.out.println();
+        }           
+          System.out.println();
+           System.out.println("sinapsis B");
+        for(int i=0;i<sinapsisB.length;i++){
+            for(int j=0;j<sinapsisB[0].length;j++) {
+                sinapsisB[i][j]=Math.random()-0.5;
+                 System.out.print( sinapsisB[i][j]+" ");
+            }
+            System.out.println();
+        }        
+         System.out.println();
+    }
+
+    /**
+     * Iniciar los datos básicos de la red.
+     * Se utiliza al preparar la red para aprendizaje.
+     *
+     * @param ratioAprendizaje
+     * @param numEntradas Cantidad de datos de entrada
+     * @param numCapaOculta Cantidad de neuronas en capa oculta
+     * @param numCapaSalida Cantidad de neuronas en capa de salida
+     */
+    public void iniciarRed(double ratioAprendizaje,int numEntradas, int numCapaOculta, int numCapaSalida ){
+        this.ratioAprendizaje=ratioAprendizaje;
+        this.numEntradas=numEntradas;
+        this.numCapaOculta=numCapaOculta;
+        this.numCapaSalida=numCapaSalida;
+
+        vector_entrada=new double[this.numEntradas];
+        vector_parcial=new double[this.numCapaOculta];
+        vector_salida=new double[this.numCapaSalida];
+
+        sinapsisA=new double[numCapaOculta][numEntradas]; //1 neurona por fila
+        sinapsisB=new double[numCapaSalida][numCapaOculta]; //cada columna son pesos que llegan a la neurona.
+
+        biasA=new double[numCapaOculta];
+        biasB=new double[numCapaSalida];
+
+        target=new double[numCapaSalida];
+        errorA=new double[numCapaOculta];
+        errorB=new double[numCapaSalida];
+    }
+
+    /**
+     * Establece el vector con todos los datos para entrenamiento.
+     * 
+     */
+    public void setVector_datos(double[][] vector_datos) {
+        this.vector_datos = vector_datos;
+    }
+    
+    /**
+     *
+     * algoritmo de entrenamiento
+     *
+     * ejecución hacia adelante
+     * calculo errores en ultima capa
+     * modificación pesos de sinapsis B
+     * calculo error capa oculta
+     * modificación pesos sinapsis A
+     */
+    public void entrenamiento(int ciclos){
+        this.ciclos=ciclos;
+        //iniciar sinapsis
+        iniciarSinapsis();
+        //capturar datos de prueba + numero de iteraciones
+
+        //cada entrada será 8 valores de entrada + 4 de salida.
+        //setVector_entrada
+        //setTarget
+
+        //repetir varias veces , una por cada valor de entrada , target.
+        //hasta que el error sea cercano a cero o se acaben las entradas.
+        for(int i=0;i<ciclos;i++) {
+            //elegir una entrada al azar
+            int marcaEntrada=(int) (vector_datos.length*Math.random());
+            System.out.println("marca: "+marcaEntrada);
+            for(int j=0;j<vector_datos[marcaEntrada].length;j++){
+                if(j<vector_entrada.length){
+                    vector_entrada[j]=vector_datos[marcaEntrada][j];
+                }else{
+                    target[j-vector_entrada.length]=vector_datos[marcaEntrada][j];
+                }
+            }
+            
+            imprimirVector(vector_entrada);
+            imprimirVector(target);
+                   
+            
+            calcular();
+            calcularErroresNeuronaSalida();
+            modificarPesosSinapsisB();
+            calcularErrorCapaOculta();
+            modificarPesosSinapsisA();
+        }
+        System.out.println("FIN ENTRENAMIENTO");
+    }
+
+     /**
      * Calcula los valores de salida de la red completa.
      *
      */
@@ -38,7 +152,7 @@ public class Red {
         double suma=0;
         for(int i=0;i<sinapsisA.length;i++){ //i es cada neurona de esta capa
             suma=0;
-            for(int j=0;j<sinapsisA[i].length;j++) { //j es numero de entradas.
+            for(int j=0;j<sinapsisA[i].length;j++) { //j es numero de entradas que llegan a la neurona
                 suma +=vector_entrada[j]*sinapsisA[i][j];
                 System.out.println("CALCULAR calculo: "+vector_entrada[j]+" "+sinapsisA[i][j]+" "+suma );
             }
@@ -68,102 +182,6 @@ public class Red {
         return 1/(1+Math.exp(-val));
     }
 
-    /*********** MÉTODOS PARA ENTRENAMIENTO *******/
-
-    /**
-     * Inicia los pesos con valores en el intervalo (-0.5,0.5)
-     *
-     */
-    public void iniciarSinapsis(){
-        for(int i=0;i<sinapsisB.length;i++){
-            for(int j=0;j<sinapsisB[0].length;j++) {
-                sinapsisB[i][j]=Math.random()-0.5;
-                sinapsisA[i][j]=Math.random()-0.5;
-            }
-        }
-        //grabar();
-    }
-
-    /**
-     * Iniciar los datos básicos de la red.
-     * Se utiliza al preparar la red para aprendizaje.
-     *
-     * @param ratioAprendizaje
-     * @param numEntradas Cantidad de datos de entrada
-     * @param numCapaOculta Cantidad de neuronas en capa oculta
-     * @param numCapaSalida Cantidad de neuronas en capa de salida
-     */
-    public void iniciarRed(double ratioAprendizaje,int numEntradas, int numCapaOculta, int numCapaSalida ){
-        this.ratioAprendizaje=ratioAprendizaje;
-        this.numEntradas=numEntradas;
-        this.numCapaOculta=numCapaOculta;
-        this.numCapaSalida=numCapaSalida;
-
-        vector_entrada=new double[this.numEntradas];
-        vector_parcial=new double[this.numEntradas];
-        vector_salida=new double[this.numEntradas];
-
-        sinapsisA=new double[numEntradas][numCapaOculta];
-        sinapsisB=new double[numCapaOculta][numCapaSalida];
-
-        biasA=new double[numCapaOculta];
-        biasB=new double[numCapaSalida];
-
-        target=new double[numCapaSalida];
-        errorA=new double[numCapaOculta];
-        errorB=new double[numCapaSalida];
-    }
-
-    /**
-     * Establece el vector con todos los datos para entrenamiento.
-     * 
-     */
-    public void setVector_datos(double[][] vector_datos) {
-        this.vector_datos = vector_datos;
-    }
-    
-    /**
-     *
-     * algoritmo de entrenamiento
-     *
-     * ejecución hacia adelante
-     * calculo errores en ultima capa
-     * modificación pesos de sinapsis B
-     * calculo error capa oculta
-     * modificación pesos sinapsis A
-     */
-    public void entrenamiento(){
-        //iniciar sinapsis
-        iniciarSinapsis();
-        //caturar datos de prueba + numero de iteraciones
-
-        //cada entrada será 8 valores de entrada + 4 de salida.
-        //setVector_entrada
-        //setTarget
-
-        //repetir varias veces , una por cada valor de entrada , target.
-        //hasta que el error sea cercano a cero o se acaben las entradas.
-        for(int i=0;i<ciclos;i++) {
-            //elegir una entrada al azar
-            int marcaEntrada=(int) (vector_datos.length*Math.random());
-            
-            for(int j=0;j<vector_datos[marcaEntrada].length;j++){
-                if(j<8){
-                    vector_entrada[j]=vector_datos[marcaEntrada][j];
-                }else{
-                    target[j-8]=vector_datos[marcaEntrada][j];
-                }
-            }
-            calcular();
-            calcularErroresNeuronaSalida();
-            modificarPesosSinapsisB();
-            calcularErrorCapaOculta();
-            modificarPesosSinapsisA();
-        }
-        System.out.println("FIN ENTRENAMIENTO");
-    }
-
-
     /**
      * Calcula los errores en la última capa.
      */
@@ -183,7 +201,7 @@ public class Red {
     public void modificarPesosSinapsisB(){
         for(int i=0;i<sinapsisB.length;i++){
             for(int j=0;j<sinapsisB[0].length;j++){
-                sinapsisB[i][j]=sinapsisB[i][j]+ratioAprendizaje*errorB[j]*vector_parcial[i];
+                sinapsisB[i][j]=sinapsisB[i][j]+ratioAprendizaje*errorB[i]*vector_parcial[j];
                System.out.println("MODIFICAR  "+i+" "+j+" "+sinapsisB[i][j]);
             }
 
@@ -199,13 +217,14 @@ public class Red {
      */
     public void calcularErrorCapaOculta(){
         double suma=0;
-        for(int i=0;i<sinapsisB.length;i++){
+        for(int i=0;i<sinapsisB[0].length;i++){ //para cada neurona  de capa oculta        
             suma=0;
-            for(int j=0;j<sinapsisB[0].length;j++) {
-                suma=suma+errorB[j]*sinapsisB[i][j];
+            for(int j=0;j<sinapsisB.length;j++) { //calculo la aportación de error a cada neurona de destino. Por eso lo recorro en columna.
+                suma=suma+errorB[j]*sinapsisB[j][i];
             }
             errorA[i]=vector_parcial[i]*(1-vector_parcial[i])*suma;
         }
+        imprimirVector(errorA);
     }
 
     /**
@@ -216,56 +235,12 @@ public class Red {
      * ...
      */
     public void modificarPesosSinapsisA(){
-        for(int i=0;i<sinapsisA.length;i++){
-            for(int j=0;j<sinapsisA[0].length;j++){
+        for(int i=0;i<sinapsisA.length;i++){ //para cada neurona
+            for(int j=0;j<sinapsisA[0].length;j++){ //para cada peso que llega a la neurona
                 sinapsisA[i][j]=sinapsisA[i][j]+ratioAprendizaje*errorA[i]*vector_entrada[j];
             }
         }
     }
-
-    /**
-     * Este método graba los datos de los pesos a un archivo externo
-     * Se usa una vez realizado el entrenamiento para usarlos en la red definitiva
-     * de la aplicación.
-     */
-   /* private void grabar(){
-        try {
-            Log.i("GRABAR","Inicio grabar");
-
-            File path= Environment.getExternalStorageDirectory();
-                File file=new File(path,"pesos.txt");
-
-                FileOutputStream out=new FileOutputStream(file);
-                OutputStreamWriter salida=new OutputStreamWriter(out);
-
-                String textoArchivo="Pesos entrada capa oculta \r\n";
-
-                for(int i=0;i<sinapsisA.length;i++) {
-                    for(int j=0;j<sinapsisA[0].length;j++){
-                        textoArchivo += " "+sinapsisA[i][j] ;
-                    }
-                    textoArchivo += "\r\n";
-                }
-                textoArchivo += "Pesos capa oculta capa salida \r\n";
-                for(int i=0;i<sinapsisB.length;i++) {
-                    for(int j=0;j<sinapsisB[0].length;j++){
-                        textoArchivo += " "+sinapsisB[i][j] ;
-                    }
-                    textoArchivo += "\r\n";
-                }
-                salida.write(textoArchivo);
-                salida.flush();
-                salida.close();
-            Log.i("GRABAR","Fin grabar "+file.getAbsolutePath()+" "+file.getName());
-
-        }catch(Exception e) {
-            Log.i("GRABAR", "fallo al grabar: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
-*/
 
 
     /************* MÉTODOS GET SET ****************************/
@@ -343,11 +318,13 @@ public class Red {
             System.out.println("SINAPSIS "+linea);
         }
     }
-
-    public void imprimirVectorParcial(){
-        for(int i=0;i<vector_parcial.length;i++){
-            System.out.println("PARCIAL  "+vector_parcial[i]);
-        }
+    
+    private void imprimirVector(double[] vec){
+        for(double dat:vec) System.out.print(dat+" ");
+        System.out.println();
     }
 
 }
+
+
+    

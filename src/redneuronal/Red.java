@@ -1,5 +1,8 @@
 package redneuronal;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 /**
  * Clase para construir la red neuronal completa.
  * Se trata de un perceptrón multicapa.
@@ -116,20 +119,26 @@ public class Red {
         //setVector_entrada
         //setTarget
 
-        //repetir varias veces , una por cada valor de entrada , target.
-        //hasta que el error sea cercano a cero o se acaben las entradas.
-        for(int i=0;i<ciclos;i++) {
-            //elegir una entrada al azar
-            int marcaEntrada=(int) (vector_datos.length*Math.random());
-            System.out.println("marca: "+marcaEntrada);
-            for(int j=0;j<vector_datos[marcaEntrada].length;j++){
-                if(j<vector_entrada.length){
-                    vector_entrada[j]=vector_datos[marcaEntrada][j];
+        //Para cada muestra de entrenamiento se hace el procesamiento
+        //backpropagation 1 vez.
+        
+        
+        
+        LinkedList lista=new LinkedList( Arrays.asList(vector_datos) );   
+        while(lista.size()>0){
+            System.out.println("tamaño lista "+lista.size());
+            int cual=(int) (Math.random() * lista.size());
+            System.out.println("cual "+cual);
+            double[] vector=(double[])lista.remove(cual);
+            for(int j=0;j<vector.length;j++){
+                 if(j<vector_entrada.length){
+                    vector_entrada[j]=vector[j];
                 }else{
-                    target[j-vector_entrada.length]=vector_datos[marcaEntrada][j];
+                    target[j-vector_entrada.length]=vector[j];
                 }
-            }
+            }  
             
+            //hacer proceso.
             imprimirVector(vector_entrada);
             imprimirVector(target);
                    
@@ -140,6 +149,7 @@ public class Red {
             calcularErrorCapaOculta();
             modificarPesosSinapsisA();
         }
+       
         System.out.println("FIN ENTRENAMIENTO");
     }
 

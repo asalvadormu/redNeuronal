@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package redneuronal;
 
 import java.io.BufferedReader;
@@ -41,8 +36,8 @@ public class RedNeuronal {
         int lonEntrada=8;
         int lonCapaOculta=7;  //8 7 4
         int lonSalida=4;
-        double ratioAprendizaje=1;
-        int ciclosAEntrenar=2;
+        double ratioAprendizaje=0.1;
+        int ciclosAEntrenar=200;
         
         
         File archivo=new File(archivoEntrada);

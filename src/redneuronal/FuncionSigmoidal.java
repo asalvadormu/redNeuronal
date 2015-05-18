@@ -1,7 +1,7 @@
 package redneuronal;
 
 /**
- *
+ * Ejecuta la función sigmoidal como función de activación. 
  * @author SAMUAN
  */
 public class FuncionSigmoidal implements IFuncionActivacion{

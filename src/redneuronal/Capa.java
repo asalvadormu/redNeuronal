@@ -19,7 +19,10 @@ public class Capa {
     private double[] vector_error_anterior;
      
     /**
-     * Constructor para cálculos.
+     * Constructor para cálculos. Se utiliza si sólo se quiere conocer el resultado que genera la red sobre una muestra dada.
+     * @param sinapsis la matriz de pesos que relaciona la capa anterior con esta.
+     * @param bias El bias de esta capa
+     * @param funcion La función de activación que se ejecutará en cada neurona de esta capa.
      */ 
     public Capa(double[][] sinapsis, double[] bias, IFuncionActivacion funcion) {
         this.sinapsis = sinapsis;
@@ -34,7 +37,10 @@ public class Capa {
     }
 
     /**
-     * Constructor para entrenamiento
+     * Constructor para agregar capas cuando se va a realizar un entrenamiento de la red.
+     * @param cuantasNeuronasAnterior cuantas neuronas tiene la capa anterior a esta, o la entrada.
+     * @param cuantasNeuronas cuantas neuronas tiene esta capa.
+     * @param funcion función de activación a ejecutar en cada neurona de esta capa
      */ 
     public Capa(int cuantasNeuronasAnterior, int cuantasNeuronas, IFuncionActivacion funcion) {
        this.sinapsis=new double[cuantasNeuronas][cuantasNeuronasAnterior];
@@ -51,7 +57,6 @@ public class Capa {
         
     /**
      * Realiza el cálculo de pesos por entrada y aplica la función de activación.
-     * 
      */
     public void calcular(){
         calculoSumatorioPesos();
@@ -75,13 +80,12 @@ public class Capa {
     
     /**
      * Realiza la operación de la función de activación.
-     * Le paso el vector con los valores z y me devuelve el vector con los valores a.
+     * Se le pasa el vector con los valores z y me devuelve el vector con los valores a.
      */
     private void calculoActivacion(){
         vector_salida=funcion.activar(vector_parcial);
     }
-    
-    
+        
     /**
      * Modifica los pesos de esta capa.
      * 
@@ -100,10 +104,11 @@ public class Capa {
     }
     
     /**
-     * Calcula el error de la capa anterior propagando hacia atras el error de esta capa.
-     * δA = outA (1 – outA) (δα WAα + δβ WAβ)
-     * δB = outB (1 – outB) (δα WBα + δβ WBβ)
-     * δC = outC (1 – outC) (δα WCα + δβ WCβ)
+     * Calcula el error de la capa anterior propagando hacia atras el error de esta capa.<br>
+     * δA = outA (1 – outA) (δα WAα + δβ WAβ) <br>
+     * δB = outB (1 – outB) (δα WBα + δβ WBβ) <br>
+     * δC = outC (1 – outC) (δα WCα + δβ WCβ) 
+     * @return Devuelve un vector de double con los datos de error para la capa anterior.
      */
     public double[] calculaErrorAnterior(){
         double suma=0;
@@ -137,7 +142,7 @@ public class Capa {
         }
     }
     
-    /************   GETTER AND SETTER *******************/
+    /*  **********   GETTER AND SETTER *******************/
 
     public double[] getVector_entrada() {
         return vector_entrada;
@@ -205,7 +210,7 @@ public class Capa {
     
     
     
-    /**************** IMPRIMIR *********************************/
+    /* *************** IMPRIMIR *********************************/
     
     public void imprimirSinapsis(){
         for(int i=0;i<sinapsis.length;i++) {

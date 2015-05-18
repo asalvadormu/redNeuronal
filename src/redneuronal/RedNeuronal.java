@@ -11,7 +11,11 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
- *
+ * Aplicación para realizar un entrenamiento de la red neuronal.
+ * El archivo de entrada contiene muestras normalizadas de 8 datos de entrada + 4 datos de salida
+ * El archivo de salida contiene las matrices de pesos y de bias.
+ * La red se construye añadiendo cada capa desde la entrada hacia la salida.
+ * 
  * @author SAMUAN
  */
 public class RedNeuronal {

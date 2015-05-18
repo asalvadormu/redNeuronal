@@ -1,20 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package redneuronal;
 
 /**
- *
+ * Interfaz que deben implementar todas las funciones de activación.
+ * Se sigue el patrón estrategia.
  * @author SAMUAN
  */
 public interface IFuncionActivacion {    
 
     /**
-     *
-     * @param val
-     * @return
+     * Ejecuta la función de activación. 
+     * @param val vector de valores z
+     * @return vector de valores a
      */
     public double[] activar(double[] val);    
 }

@@ -5,10 +5,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
- * Clase para representar redes neuronales, perceptrones multicapa.
- * 
- * La cantidad de capas y la cantidad de neuronas por capa son configurables.
- * 
+ * Clase para representar redes neuronales, perceptrones multicapa. * 
+ * La cantidad de capas y la cantidad de neuronas por capa son configurables. * 
  * Para cálculo y entrenamiento.
  * 
  * @author SAMUAN
@@ -36,6 +34,9 @@ public class Red {
     
     /**
      * Constructor para entrenamiento de la red.
+     * @param momento Indica el factor momento, para utilizar en aprendizaje.
+     * @param ratioAprendizaje Indica el valor del ratio de aprendizaje.
+     * @param epocas Indica el número de veces que se van a presentar a la red los mismos datos de prueba.
      */ 
     public Red(double momento, double ratioAprendizaje, int epocas){
         this.momento=momento;
@@ -58,6 +59,7 @@ public class Red {
     
     /**
      * Entrena la red a partir de una lista de muestras.
+     * Las muestras se extraen al azar del vector de datos.
      * 
      */ 
     public void entrenar(){
@@ -131,6 +133,9 @@ public class Red {
     
     /**
      *  Método para agregar capas cuando se va a realizar un calculo de red.
+     * @param sinapsis la matriz de pesos que relaciona la capa anterior con esta.
+     * @param bias El bias de esta capa
+     * @param funcion La función de activación que se ejecutará en cada neurona de esta capa.
      */ 
     public void agregarCapa(double[][] sinapsis, double[] bias, IFuncionActivacion funcion){
         Capa capa=new Capa(sinapsis,bias, funcion);
@@ -139,7 +144,10 @@ public class Red {
     }
     
     /**
-     * Método para agragar capas cuando se va a realizar un entrenamiento de la red.
+     * Constructor para agragar capas cuando se va a realizar un entrenamiento de la red.
+     * @param cuantasNeuronasAnterior cuantas neuronas tiene la capa anterior a esta, o la entrada.
+     * @param cuantasNeuronas cuantas neuronas tiene esta capa.
+     * @param funcion función de activación a ejecutar en cada neurona de esta capa.
      */ 
     public void agregarCapa(int cuantasNeuronasAnterior, int cuantasNeuronas, IFuncionActivacion funcion){
         Capa capa=new Capa(cuantasNeuronasAnterior,cuantasNeuronas,funcion);
@@ -157,6 +165,10 @@ public class Red {
 
     /******************** GETTER AND SETTER ****************************/
     
+    /**
+     * Devuelve el vector usado para entradas o salidas.
+     * @return vector 
+     */
     public double[] getVectorEn() {
         return vectorEn;
     }
@@ -196,6 +208,9 @@ public class Red {
     
     /************* IMPRIMIR **************/
 
+    /**
+     * @param vec vector a imprimir.
+     */ 
     public void imprimirVector(double[] vec){
         for(double dat:vec) System.out.print(dat+" ");
         System.out.println();
